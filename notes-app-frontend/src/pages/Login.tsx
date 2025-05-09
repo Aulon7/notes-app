@@ -1,31 +1,30 @@
+import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [loginFormData, setLoginFormData] = useState({
-    email: "",
-    password: "",
-    error: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setLoginFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const { email, password, error } = loginFormData;
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!email || !password) {
-      setLoginFormData((prevData) => ({
-        ...prevData,
-        error: "All fields are required!",
-      }));
-      return;
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/");
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -39,7 +38,9 @@ const Login = () => {
             <input
               type="email"
               placeholder="Enter your first name"
-              onChange={handleChange}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
               className="w-full p-3 border rounded-lg text-sm"
             />
           </div>
@@ -47,7 +48,9 @@ const Login = () => {
             <label className="block text-gray-700 pb-1.5">Password</label>
             <input
               type="password"
-              onChange={handleChange}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               placeholder="Enter your last name"
               className="w-full p-3 border rounded-lg text-sm"
             />
@@ -59,7 +62,6 @@ const Login = () => {
             >
               Login
             </button>
-            <p className="text-sm text-center mt-1 text-red-600">{error}</p>
             <p className="text-center mt-2">
               Don't have an account?{" "}
               <Link

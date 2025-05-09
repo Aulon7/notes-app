@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 
@@ -17,16 +18,17 @@ router.post("/register", async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 12);
     const userData = new User({
       firstName,
       lastName,
       email,
-      password,
+      password: hashedPassword,
     });
 
     await userData.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Registration successful",
     });
@@ -48,31 +50,29 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message: "Email already registered",
       });
     }
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials",
-      });
+    const checkPassword = await bcrypt.compare(password, user.password);
+
+    if (!checkPassword) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Wrong credentials" });
     }
 
     const token = jwt.sign(
-      { _id: user._id },
-      process.env.JWT_SECRET || "your-secret-key",
-      { expiresIn: "7d" }
+      { id: user._id },
+      "fK8+eR3bS1oHkPq9c6n4Z5GkE8qNtO1BxJdXy7A0zLrQhCgWvY2nT5rMiXaBzUc7",
+      { expiresIn: "1h" }
     );
 
-    res.json({
+    res.status(200).json({
       success: true,
-      user: {
-        firstName: user.firstName,
-        email: user.email,
-      },
       token,
+      user: { name: user.name },
+      message: "Login successful",
     });
   } catch (error) {
     res.status(500).json({

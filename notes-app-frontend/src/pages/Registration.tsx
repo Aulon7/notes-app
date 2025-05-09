@@ -3,22 +3,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Registration = () => {
-  const [registerFormData, setRegisterFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
+  const [firstName, setFirstname] = useState("");
+  const [lastName, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const { firstName, lastName, email, password } = registerFormData;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setRegisterFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -47,7 +36,7 @@ const Registration = () => {
             <input
               type="text"
               placeholder="Enter your first name"
-              onChange={handleChange}
+              onChange={(e) => setFirstname(e.target.value)}
               className="w-full p-3 border rounded-lg text-sm"
             />
           </div>
@@ -55,7 +44,7 @@ const Registration = () => {
             <label className="block text-gray-700 pb-1.5">Last name</label>
             <input
               type="text"
-              onChange={handleChange}
+              onChange={(e) => setLastname(e.target.value)}
               placeholder="Enter your last name"
               className="w-full p-3 border rounded-lg text-sm"
             />
@@ -64,7 +53,7 @@ const Registration = () => {
             <label className="block text-gray-700 pb-1.5">E-mail</label>
             <input
               type="email"
-              onChange={handleChange}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your e-mail"
               className="w-full px-3 p-3 border rounded-lg text-sm"
             />
@@ -73,7 +62,7 @@ const Registration = () => {
             <label className="block text-gray-700 pb-1.5">Password</label>
             <input
               type="password"
-              onChange={handleChange}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="w-full p-3 border rounded-lg text-sm"
             />

@@ -1,26 +1,13 @@
-import { createContext, ReactNode, useState, useEffect } from "react";
-import { AuthContextType } from "./useAuthentication";
+import { ReactNode, useState } from "react";
+import { AuthenticationContext } from "./AuthenticationContext";
 
 interface User {
   firstName: string;
   email: string;
 }
 
-const AuthenticationContext = createContext<AuthContextType | undefined>(
-  undefined
-);
-
 const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    // Check for token and user data in localStorage on mount
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-    if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
   const loggedInHandler = (user: User, token: string) => {
     setUser(user);
@@ -42,6 +29,4 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     </AuthenticationContext.Provider>
   );
 };
-
-export { AuthenticationContext };
 export default ContextProvider;
