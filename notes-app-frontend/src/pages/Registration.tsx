@@ -35,6 +35,7 @@ const Registration = () => {
             <label className="block text-gray-700 pb-1.5">First name</label>
             <input
               type="text"
+              value={firstName}
               placeholder="Enter your first name"
               onChange={(e) => setFirstname(e.target.value)}
               className="w-full p-3 border rounded-lg text-sm"
@@ -44,6 +45,7 @@ const Registration = () => {
             <label className="block text-gray-700 pb-1.5">Last name</label>
             <input
               type="text"
+              value={lastName}
               onChange={(e) => setLastname(e.target.value)}
               placeholder="Enter your last name"
               className="w-full p-3 border rounded-lg text-sm"
@@ -53,6 +55,7 @@ const Registration = () => {
             <label className="block text-gray-700 pb-1.5">E-mail</label>
             <input
               type="email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your e-mail"
               className="w-full px-3 p-3 border rounded-lg text-sm"
@@ -62,6 +65,7 @@ const Registration = () => {
             <label className="block text-gray-700 pb-1.5">Password</label>
             <input
               type="password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="w-full p-3 border rounded-lg text-sm"

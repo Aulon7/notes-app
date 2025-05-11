@@ -2,11 +2,13 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import useAuthentication from "../context/useAuthentication";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { loggedInHandler } = useAuthentication();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +21,7 @@ const Login = () => {
         }
       );
       if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
+        loggedInHandler(response.data?.user, response.data.token);
         navigate("/");
       }
       console.log(response);
@@ -37,6 +39,7 @@ const Login = () => {
             <label className="block text-gray-700 pb-1.5">E-mail</label>
             <input
               type="email"
+              value={email}
               placeholder="Enter your first name"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEmail(e.target.value)
@@ -48,6 +51,7 @@ const Login = () => {
             <label className="block text-gray-700 pb-1.5">Password</label>
             <input
               type="password"
+              value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPassword(e.target.value)
               }

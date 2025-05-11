@@ -1,89 +1,40 @@
-// import express from "express";
-// import { Note } from "../models/Note.js";
-// import { auth } from "../middleware/auth.js";
+import express from "express";
+import Note from "../models/Note.js";
+import middleWare from "../middleware/middleware.js";
 
-// const router = express.Router();
+const router = express.Router();
 
-// // Get all notes
-// router.get("/", auth, async (req, res) => {
-//   try {
-//     const notes = await Note.find({ user: req.user._id });
-//     res.json({ success: true, notes });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to fetch notes",
-//     });
-//   }
-// });
+// Create note
+router.post("/add", middleWare, async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const note = new Note({
+      title,
+      description,
+      userId: req.user.id,
+    });
+    await note.save();
+    return res
+      .status(200)
+      .json({ success: true, message: "Note created successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to create note" });
+  }
+});
 
-// // Create note
-// router.post("/add", auth, async (req, res) => {
-//   try {
-//     const { title, description } = req.body;
-//     const note = new Note({
-//       title,
-//       description,
-//       user: req.user._id,
-//     });
-//     await note.save();
-//     res.status(201).json({ success: true, note });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to create note",
-//     });
-//   }
-// });
+//Get notes data
 
-// // Update note
-// router.put("/:id", auth, async (req, res) => {
-//   try {
-//     const { title, description } = req.body;
-//     const note = await Note.findOneAndUpdate(
-//       { _id: req.params.id, user: req.user._id },
-//       { title, description },
-//       { new: true }
-//     );
+router.get("/", async (req, res) => {
+  try {
+    const notes = await Note.find();
+    return res.status(200).json({ success: true, notes });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Couldn't fetch notes" });
+  }
+});
 
-//     if (!note) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Note not found",
-//       });
-//     }
-
-//     res.json({ success: true, note });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to update note",
-//     });
-//   }
-// });
-
-// // Delete note
-// router.delete("/:id", auth, async (req, res) => {
-//   try {
-//     const note = await Note.findOneAndDelete({
-//       _id: req.params.id,
-//       user: req.user._id,
-//     });
-
-//     if (!note) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Note not found",
-//       });
-//     }
-
-//     res.json({ success: true });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to delete note",
-//     });
-//   }
-// });
-
-// export default router;
+export default router;

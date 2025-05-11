@@ -1,51 +1,64 @@
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-
-// Replace 'any' with your NoteProps type if you have it
+import { useEffect, useState } from "react";
+import { NoteProps } from "../pages/Home";
 interface Props {
-  modalOpenHandler: () => void;
-  openModal: boolean;
-  currentNote: any;
-  onEditSubmit: (data: { title: string; description: string }) => void;
+  openModalHandler: () => void;
+  modalRef: React.RefObject<HTMLDivElement | null>;
+  addNoteHandler: (title: string, description: string) => void;
+  currentNote?: NoteProps | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editNoteHandler?: any | null;
 }
 
-const Modal = ({ modalOpenHandler, openModal, currentNote }: Props) => {
-  const modalRef = useRef(null);
-
+const Modal = ({
+  openModalHandler,
+  modalRef,
+  addNoteHandler,
+  currentNote,
+  editNoteHandler,
+}: Props) => {
   // State for form fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
-    if (openModal) {
-      gsap.fromTo(
-        modalRef.current,
-        { opacity: 0, scale: 0.8, y: -50 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "power2.out" }
-      );
+    if (currentNote) {
+      setTitle(currentNote.title);
+      setDescription(currentNote.description);
+    } else {
+      setTitle("");
+      setDescription("");
     }
-  }, [openModal]);
+  }, [currentNote]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (currentNote) {
+      editNoteHandler(currentNote._id, title, description);
+    } else {
+      addNoteHandler(title, description);
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center fixed inset-0">
+    <div className="flex justify-center items-center fixed inset-0 bg-gray-800/75">
       <div
         ref={modalRef}
         className="bg-white p-8 rounded-xl border border-gray-200 shadow-md"
       >
         <h2 className="text-xl font-medium mb-4">
-          {currentNote ? "Edit Note" : "Add a new note"}
+          {currentNote ? "Edit note" : "Add a new note"}
         </h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Enter the title"
             value={title}
+            placeholder="Enter the title"
             onChange={(e) => setTitle(e.target.value)}
             className="w-full mb-4 px-4 py-2 border border-gray-300 rounded-xl focus:outline-cyan-600"
           />
           <textarea
-            placeholder="Description of note"
             value={description}
+            placeholder="Description of note"
             onChange={(e) => setDescription(e.target.value)}
             className="min-h-40 w-full mb-4 px-4 py-2 border border-gray-300 rounded-xl focus:outline-cyan-600"
           />
@@ -57,6 +70,7 @@ const Modal = ({ modalOpenHandler, openModal, currentNote }: Props) => {
           </button>
           <button
             type="button"
+            onClick={openModalHandler}
             className="px-4 py-2 ml-2 bg-gray-300 hover:bg-gray-400 transition cursor-grab text-black p-3 rounded-xl"
           >
             Cancel

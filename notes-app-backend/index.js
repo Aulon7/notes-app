@@ -2,7 +2,7 @@ import express from "express";
 import connectionToMongoDB from "./dababase/index.js";
 import cors from "cors";
 import authRouter from "./routes/auth.js";
-// import noteRoutes from "./routes/note.js";
+import noteRouter from "./routes/note.js";
 
 const app = express();
 
@@ -12,6 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/note", noteRouter);
 
 // Start server;
 app.listen(5000, () => {

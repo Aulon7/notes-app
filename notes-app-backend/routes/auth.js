@@ -62,16 +62,14 @@ router.post("/login", async (req, res) => {
         .json({ success: false, message: "Wrong credentials" });
     }
 
-    const token = jwt.sign(
-      { id: user._id },
-      "fK8+eR3bS1oHkPq9c6n4Z5GkE8qNtO1BxJdXy7A0zLrQhCgWvY2nT5rMiXaBzUc7",
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ id: user._id }, "secretKeyoF123123", {
+      expiresIn: "5h",
+    });
 
     res.status(200).json({
       success: true,
       token,
-      user: { name: user.name },
+      user: { firstName: user.firstName },
       message: "Login successful",
     });
   } catch (error) {
