@@ -105,6 +105,25 @@ const Home = () => {
       console.log(error);
     }
   };
+
+  const deleteNoteHandler = async (_id: string) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/note/${_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        fetchNotesData();
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   console.log("test", notes);
   return (
     <div className="min-h-screen">
@@ -113,7 +132,12 @@ const Home = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 mt-3">
             {notes.map((note) => (
-              <NoteCard key={note._id} note={note} onNoteEdit={onNoteEdit} />
+              <NoteCard
+                key={note._id}
+                note={note}
+                onNoteEdit={onNoteEdit}
+                deleteNoteHandler={deleteNoteHandler}
+              />
             ))}
           </div>
           <button

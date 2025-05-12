@@ -58,4 +58,29 @@ router.put("/:id", middleWare, async (req, res) => {
   }
 });
 
+// Delete note
+router.delete("/:id", middleWare, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedNote = await Note.findByIdAndDelete(id);
+
+    if (!deletedNote) {
+      return res.status(404).json({
+        success: false,
+        message: "Note not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Note deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Couldn't delete note",
+    });
+  }
+});
+
 export default router;
