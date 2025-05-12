@@ -18,26 +18,6 @@ const Home = () => {
   const { user } = useAuthentication();
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const openModalHandler = () => {
-    setOpenModal((prevState) => !prevState);
-  };
-
-  const onNoteEdit = (note: NoteProps) => {
-    setCurrentNote(note);
-    setOpenModal(true);
-  };
-  const fetchNotesData = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/note");
-      setNotes(response.data.notes);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    fetchNotesData();
-  }, []);
-
   useEffect(() => {
     if (openModal) {
       gsap.fromTo(
@@ -47,6 +27,32 @@ const Home = () => {
       );
     }
   }, [openModal]);
+
+  const fetchNotesData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const { data } = await axios.get("http://localhost:5000/api/note", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setNotes(data.notes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchNotesData();
+  }, []);
+
+  const closeModalHandler = () => {
+    setOpenModal(false);
+  };
+
+  const onNoteEdit = (note: NoteProps) => {
+    setCurrentNote(note);
+    setOpenModal(true);
+  };
 
   const addNoteHandler = async (title: string, description: string) => {
     try {
@@ -62,9 +68,9 @@ const Home = () => {
           },
         }
       );
-      if (response.data.sucess) {
+      if (response.data.success) {
         fetchNotesData();
-        openModalHandler();
+        closeModalHandler();
       }
       console.log(response);
     } catch (error) {
@@ -73,13 +79,13 @@ const Home = () => {
   };
 
   const editNoteHandler = async (
-    id: string,
+    _id: string,
     title: string,
     description: string
   ) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/note/${id}`,
+        `http://localhost:5000/api/note/${_id}`,
         {
           title,
           description,
@@ -90,9 +96,9 @@ const Home = () => {
           },
         }
       );
-      if (response.data.sucess) {
+      if (response.data.success) {
         fetchNotesData();
-        openModalHandler();
+        closeModalHandler();
       }
       console.log(response);
     } catch (error) {
@@ -111,7 +117,10 @@ const Home = () => {
             ))}
           </div>
           <button
-            onClick={openModalHandler}
+            onClick={() => {
+              setCurrentNote(null);
+              setOpenModal(true);
+            }}
             className="fixed bottom-6 right-6 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 transition cursor-grab text-white p-3 rounded-xl"
           >
             Add a note
@@ -121,7 +130,7 @@ const Home = () => {
 
       {openModal && (
         <Modal
-          openModalHandler={openModalHandler}
+          closeModalHandler={closeModalHandler}
           modalRef={modalRef}
           addNoteHandler={addNoteHandler}
           currentNote={currentNote}

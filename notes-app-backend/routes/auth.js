@@ -37,8 +37,8 @@ router.post("/register", async (req, res) => {
       success: false,
       message: "Registration failed",
     });
+    console.log("test", error);
   }
-  console.log("test", error);
 });
 
 // Login
@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, "secretKeyoF123123", {
-      expiresIn: "5h",
+      expiresIn: "24h",
     });
 
     res.status(200).json({

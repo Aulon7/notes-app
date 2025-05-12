@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NoteProps } from "../pages/Home";
 interface Props {
-  openModalHandler: () => void;
+  closeModalHandler: () => void;
   modalRef: React.RefObject<HTMLDivElement | null>;
   addNoteHandler: (title: string, description: string) => void;
   currentNote?: NoteProps | null;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Modal = ({
-  openModalHandler,
+  closeModalHandler,
   modalRef,
   addNoteHandler,
   currentNote,
@@ -24,9 +24,6 @@ const Modal = ({
     if (currentNote) {
       setTitle(currentNote.title);
       setDescription(currentNote.description);
-    } else {
-      setTitle("");
-      setDescription("");
     }
   }, [currentNote]);
 
@@ -37,6 +34,7 @@ const Modal = ({
     } else {
       addNoteHandler(title, description);
     }
+    closeModalHandler();
   };
 
   return (
@@ -70,7 +68,7 @@ const Modal = ({
           </button>
           <button
             type="button"
-            onClick={openModalHandler}
+            onClick={closeModalHandler}
             className="px-4 py-2 ml-2 bg-gray-300 hover:bg-gray-400 transition cursor-grab text-black p-3 rounded-xl"
           >
             Cancel
