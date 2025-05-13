@@ -5,6 +5,7 @@ import Modal from "../components/Modal";
 import useAuthentication from "../context/useAuthentication";
 import axios from "axios";
 import NoteCard from "../components/NoteCard";
+import { toast } from "react-toastify";
 
 export interface NoteProps {
   _id: string;
@@ -15,6 +16,9 @@ const Home = () => {
   const [openModal, setOpenModal] = useState(false);
   const [notes, setNotes] = useState<NoteProps[]>([]);
   const [currentNote, setCurrentNote] = useState<NoteProps | null>(null);
+  const [query, setQuery] = useState<string>("");
+  const [filteredNotes, setFilteredNotes] = useState<NoteProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuthentication();
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +33,7 @@ const Home = () => {
   }, [openModal]);
 
   const fetchNotesData = async () => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
       const { data } = await axios.get("http://localhost:5000/api/note", {
@@ -37,13 +42,29 @@ const Home = () => {
         },
       });
       setNotes(data.notes);
+      setFilteredNotes(data.notes);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
     fetchNotesData();
   }, []);
+
+  useEffect(() => {
+    if (query.trim() === "") {
+      setFilteredNotes(notes);
+    } else {
+      const filtered = notes.filter(
+        (note) =>
+          note.title.toLowerCase().includes(query.toLowerCase()) ||
+          note.description.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredNotes(filtered);
+    }
+  }, [query, notes]);
 
   const closeModalHandler = () => {
     setOpenModal(false);
@@ -52,6 +73,10 @@ const Home = () => {
   const onNoteEdit = (note: NoteProps) => {
     setCurrentNote(note);
     setOpenModal(true);
+  };
+
+  const queryHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
   };
 
   const addNoteHandler = async (title: string, description: string) => {
@@ -117,6 +142,7 @@ const Home = () => {
         }
       );
       if (response.data.success) {
+        toast.success("Note deleted successfully");
         fetchNotesData();
       }
       console.log(response);
@@ -124,21 +150,41 @@ const Home = () => {
       console.log(error);
     }
   };
-  console.log("test", notes);
+
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <Navbar queryHandler={queryHandler} query={query} />
       {user && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 mt-3">
-            {notes.map((note) => (
-              <NoteCard
-                key={note._id}
-                note={note}
-                onNoteEdit={onNoteEdit}
-                deleteNoteHandler={deleteNoteHandler}
-              />
-            ))}
+            {isLoading ? (
+              <div className="col-span-3 flex justify-center items-center min-h-[50vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
+              </div>
+            ) : filteredNotes.length === 0 ? (
+              <div className="col-span-3 flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+                <div className="text-4xl text-gray-400">
+                  {query ? "🔍" : "📝"}
+                </div>
+                <div className="text-xl text-gray-500 font-medium">
+                  {query ? "No notes found" : "No notes yet"}
+                </div>
+                {!query && (
+                  <p className="text-gray-400 text-sm">
+                    Click the button below to create your first note
+                  </p>
+                )}
+              </div>
+            ) : (
+              filteredNotes.map((note) => (
+                <NoteCard
+                  key={note._id}
+                  note={note}
+                  onNoteEdit={onNoteEdit}
+                  deleteNoteHandler={deleteNoteHandler}
+                />
+              ))
+            )}
           </div>
           <button
             onClick={() => {
