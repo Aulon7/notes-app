@@ -35,15 +35,17 @@ const Navbar = ({ queryHandler, query }: NavBarProps) => {
           </div>
 
           {/* Search bar - hidden on mobile */}
-          <div className="hidden md:flex items-center flex-1 justify-center">
-            <input
-              type="text"
-              value={query}
-              onChange={queryHandler}
-              placeholder="Search for notes"
-              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-xl focus:outline-cyan-600"
-            />
-          </div>
+          {user && (
+            <div className="hidden md:flex items-center flex-1 justify-center">
+              <input
+                type="text"
+                value={query}
+                onChange={queryHandler}
+                placeholder="Search for notes"
+                className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-xl focus:outline-cyan-600"
+              />
+            </div>
+          )}
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-4">
@@ -102,15 +104,17 @@ const Navbar = ({ queryHandler, query }: NavBarProps) => {
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           {/* Mobile search bar */}
-          <div className="px-4 py-2">
-            <input
-              type="text"
-              value={query}
-              onChange={queryHandler}
-              placeholder="Search for notes"
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-cyan-600"
-            />
-          </div>
+          {user && (
+            <div className="px-4 py-2">
+              <input
+                type="text"
+                value={query}
+                onChange={queryHandler}
+                placeholder="Search for notes"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-cyan-600"
+              />
+            </div>
+          )}
 
           {/* Mobile menu items */}
           {!user ? (
