@@ -14,7 +14,7 @@ const Registration = () => {
 
     try {
       const response = await axios.post(
-        "https://notes-app-2nim.onrender.com/api/auth/register",
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
         {
           firstName,
           lastName,

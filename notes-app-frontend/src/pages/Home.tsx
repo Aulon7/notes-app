@@ -36,14 +36,11 @@ const Home = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.get(
-        "https://notes-app-2nim.onrender.com/api/note",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/note`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setNotes(data.notes);
       setFilteredNotes(data.notes);
     } catch (error) {
@@ -85,7 +82,7 @@ const Home = () => {
   const addNoteHandler = async (title: string, description: string) => {
     try {
       const response = await axios.post(
-        "https://notes-app-2nim.onrender.com/api/note/add",
+        `${import.meta.env.VITE_API_URL}/api/note/add`,
         {
           title,
           description,
@@ -100,7 +97,6 @@ const Home = () => {
         fetchNotesData();
         closeModalHandler();
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -113,7 +109,7 @@ const Home = () => {
   ) => {
     try {
       const response = await axios.put(
-        `https://notes-app-2nim.onrender.com/api/note/${_id}`,
+        `${import.meta.env.VITE_API_URL}/api/note/${_id}`,
         {
           title,
           description,
@@ -128,7 +124,6 @@ const Home = () => {
         fetchNotesData();
         closeModalHandler();
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -137,7 +132,7 @@ const Home = () => {
   const deleteNoteHandler = async (_id: string) => {
     try {
       const response = await axios.delete(
-        `https://notes-app-2nim.onrender.com/api/note/${_id}`,
+        `${import.meta.env.VITE_API_URL}/api/note/${_id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -148,7 +143,6 @@ const Home = () => {
         toast.success("Note deleted successfully");
         fetchNotesData();
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
