@@ -36,11 +36,14 @@ const Home = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.get("http://localhost:5000/api/note", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data } = await axios.get(
+        "https://notes-app-2nim.onrender.com/api/note",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setNotes(data.notes);
       setFilteredNotes(data.notes);
     } catch (error) {
@@ -82,7 +85,7 @@ const Home = () => {
   const addNoteHandler = async (title: string, description: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/note/add",
+        "https://notes-app-2nim.onrender.com/api/note/add",
         {
           title,
           description,
@@ -110,7 +113,7 @@ const Home = () => {
   ) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/note/${_id}`,
+        `https://notes-app-2nim.onrender.com/api/note/${_id}`,
         {
           title,
           description,
@@ -134,7 +137,7 @@ const Home = () => {
   const deleteNoteHandler = async (_id: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/note/${_id}`,
+        `https://notes-app-2nim.onrender.com/api/note/${_id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

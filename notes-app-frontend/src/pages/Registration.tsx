@@ -14,7 +14,7 @@ const Registration = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://notes-app-2nim.onrender.com/api/auth/register",
         {
           firstName,
           lastName,
