@@ -16,7 +16,6 @@ const Modal = ({
   currentNote,
   editNoteHandler,
 }: Props) => {
-  // State for form fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 

@@ -11,6 +11,7 @@ export interface NoteProps {
   _id: string;
   title: string;
   description: string;
+  createdAt: string;
 }
 const Home = () => {
   const [openModal, setOpenModal] = useState(false);
