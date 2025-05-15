@@ -18,12 +18,4 @@ export default {
     },
   },
   plugins: [],
-  // Ensure Tailwind works in production
-  future: {
-    hoverOnlyWhenSupported: true,
-  },
-  // Enable all of Tailwind's features
-  corePlugins: {
-    preflight: true,
-  },
 } 
