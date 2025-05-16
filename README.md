@@ -12,8 +12,6 @@ Deployed on Render: https://notes-app-frontend-da8a.onrender.com/
 - MongoDB database
 - TypeScript support
 
-## Tech Stack
-
 ### Frontend
 - React
 - TypeScript
